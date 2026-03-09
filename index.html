@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GMT SYSTEMS - Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+        
+        :root {
+            --gmt-red: #D5001C;
+            --gmt-dark: #111111;
+            --gmt-gray: #F5F5F5;
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #FFFFFF; /* الثيم الفاتح الأساسي */
+            color: var(--gmt-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        .bg-gmt-red { background-color: var(--gmt-red); }
+        .text-gmt-red { color: var(--gmt-red); }
+        
+        .card-shadow {
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--gmt-red) !important;
+            box-shadow: 0 0 0 2px rgba(213, 0, 28, 0.1);
+        }
+
+        /* تخصيص التمرير */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
+</head>
+<body class="pb-24 bg-gray-50/50">
+
+    <!-- Header الرسمي -->
+    <header class="bg-white border-b border-gray-100 p-4 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
+            <!-- اللوغو والنصوص التعريفية -->
+            <div class="flex items-center gap-4 w-full lg:w-auto justify-center lg:justify-start">
+                <img src="logo.jpg" alt="GMT Logo" class="h-14 w-auto object-contain" onerror="this.src='https://via.placeholder.com/150x60?text=GMT+LOGO'">
+                <div class="border-r-2 border-gray-100 pr-4">
+                    <h1 class="text-sm md:text-base font-extrabold text-gray-800 leading-tight">مجموعة General Media Tech التجارية</h1>
+                    <p class="text-[10px] md:text-[11px] font-bold text-gmt-red tracking-wide uppercase">نظام إدارة أوردرات الشحن</p>
+                </div>
+            </div>
+            
+            <!-- محرك البحث اللحظي -->
+            <div class="w-full lg:flex-1 lg:max-w-md">
+                <input type="text" id="searchInput" oninput="render()" placeholder="بحث سريع عن اسم، رقم، أو بوليصة..." class="w-full p-2.5 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-gray-200 focus:border-gmt-red transition-all text-center lg:text-right">
+            </div>
+            
+            <!-- الأزرار المنظمة (شبكة على الهاتف، صف على الكمبيوتر) -->
+            <div class="grid grid-cols-2 lg:flex gap-2 w-full lg:w-auto">
+                <a href="https://t.me/+1wJ25bgbz2NiYzFk" class="text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4 text-blue-500"></i> تليغرام
+                </a>
+                <a href="http://90.153.255.28:8080/ords/f?p=102:03" target="_blank" class="text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="external-link" class="w-4 h-4 text-gmt-red"></i> تتبع
+                </a>
+                <button onclick="exportToCSV()" class="text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="download" class="w-4 h-4 text-emerald-600"></i> تصدير
+                </button>
+                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-gmt-red text-white px-4 py-2.5 rounded-xl font-black text-xs shadow-md hover:bg-red-700 active:scale-95 transition-all flex items-center justify-center gap-2 tracking-wide">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-4 max-w-5xl mx-auto space-y-8 mt-6">
+        
+        <!-- المالية حسب الفروع -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-2 px-1">
+                <div class="w-1.5 h-5 bg-gmt-red rounded-full"></div>
+                <h2 class="text-xs font-black text-gray-500 uppercase">إحصائيات المبالغ المعلقة بالفروع</h2>
+            </div>
+            
+            <div id="branch-financials" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <!-- مبالغ الفروع -->
+            </div>
+            
+            <div class="bg-gmt-dark text-white p-5 rounded-2xl shadow-xl flex justify-between items-center bg-[#111111] border-b-4 border-gmt-red">
+                <div>
+                    <p class="text-[10px] font-bold text-gray-400">الإجمالي الكلي المعلق</p>
+                    <p class="text-[9px] text-gray-500 mt-0.5 font-semibold">مجموع المبالغ قيد الشحن لكافة الفروع</p>
+                </div>
+                <p id="totalUnpaid" class="text-3xl font-black text-white">$0</p>
+            </div>
+        </section>
+
+        <!-- Loader -->
+        <div id="loader" class="text-center py-20">
+            <div class="w-10 h-10 border-4 border-gmt-red border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p class="mt-4 text-[10px] font-bold text-gray-400 tracking-widest uppercase">جاري مزامنة بيانات GMT Cloud...</p>
+        </div>
+
+        <!-- الأقسام -->
+        <div id="appContent" class="hidden space-y-12">
+            <!-- قيد التجهيز -->
+            <section>
+                <div class="flex items-center gap-2 mb-4 px-2">
+                    <i data-lucide="inbox" class="w-5 h-5 text-gray-400"></i>
+                    <h2 class="text-xs font-black text-gray-500 italic"> طلبات قيد التجهيز</h2>
+                </div>
+                <div id="list-pending" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </section>
+
+            <!-- في الطريق -->
+            <section>
+                <div class="flex items-center gap-2 mb-4 px-2">
+                    <i data-lucide="truck" class="w-5 h-5 text-gmt-red"></i>
+                    <h2 class="text-xs font-black text-gmt-red italic underline"> بضائع في الطريق (معلقة)</h2>
+                </div>
+                <div id="list-shipped" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </section>
+
+            <!-- تم التسليم -->
+            <section>
+                <div class="flex items-center gap-2 mb-4 px-2">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i>
+                    <h2 class="text-xs font-black text-emerald-600 italic"> طلبات تم تسليمها بنجاح</h2>
+                </div>
+                <div id="list-completed" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- مودال إضافة طلب (5 حقول + فرع + ملاحظات) -->
+    <div id="addModal" class="fixed inset-0 bg-black/60 hidden z-[100] p-4 flex items-center justify-center backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-50 pb-4">
+                <h3 class="font-black text-xl text-gray-800">إضافة طلب جديد</h3>
+                <button onclick="document.getElementById('addModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i data-lucide="x-circle" class="w-7 h-7"></i>
+                </button>
+            </div>
+            <form id="formAdd" class="space-y-4">
+                <div class="space-y-3">
+                    <label class="text-[10px] font-black text-gray-400 uppercase mr-1">بيانات الزبون</label>
+                    <input required id="in-name" placeholder="اسم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent focus:border-gray-200 transition-all">
+                    <input required id="in-phone" placeholder="رقم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent focus:border-gray-200 transition-all">
+                    <input required id="in-addr" placeholder="عنوان الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent focus:border-gray-200 transition-all">
+                </div>
+                
+                <div class="space-y-3 pt-2">
+                    <label class="text-[10px] font-black text-gray-400 uppercase mr-1">بيانات الشحنة</label>
+                    <input required id="in-prod" placeholder="اسم المنتج" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent focus:border-gray-200 transition-all">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input required id="in-price" type="number" placeholder="المبلغ $" class="w-full p-4 bg-red-50 text-red-700 rounded-xl outline-none text-sm font-black border border-red-100">
+                        <input required list="branchesList" id="in-branch" placeholder="فرع الشحن" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent focus:border-gray-200 transition-all">
+                    </div>
+                </div>
+
+                <datalist id="branchesList">
+                    <option value="حلب">
+                    <option value="حماة">
+                    <option value="درعا">
+                </datalist>
+
+                <textarea id="in-notes" placeholder="ملاحظات الطلب (اختياري)..." rows="2" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold resize-none border border-transparent focus:border-gray-200 transition-all"></textarea>
+
+                <div class="pt-4">
+                    <button type="submit" id="saveBtn" class="w-full bg-gmt-red text-white py-4 rounded-xl font-black text-lg shadow-lg hover:bg-red-700 transition-all">حفظ الطلب سحابياً</button>
+                    <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')" class="w-full text-gray-400 font-bold py-3 text-xs uppercase tracking-widest mt-2">إلغاء العملية</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- مودال تأكيد الشحن (رقم الشحنة والملاحظات) -->
+    <div id="shipModal" class="fixed inset-0 bg-black/60 hidden z-[110] p-4 flex items-center justify-center backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl text-center">
+            <div class="w-16 h-16 bg-red-50 text-gmt-red rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="truck" class="w-8 h-8"></i>
+            </div>
+            <h3 class="font-black text-xl mb-1 text-gray-800">تأكيد شحن الطلب</h3>
+            <p class="text-[10px] text-gray-400 mb-6 font-bold uppercase">إضافة بيانات بوليصة الشحن</p>
+            
+            <div class="space-y-3 text-right">
+                <input id="ship-tracking" placeholder="رقم الشحنة / البوليصة" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-black text-center tracking-widest border border-transparent focus:border-gray-100">
+                <textarea id="ship-notes" placeholder="ملاحظات الشحن..." rows="2" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold text-center resize-none border border-transparent focus:border-gray-100"></textarea>
+                
+                <button onclick="confirmShipping()" class="w-full bg-gmt-dark text-white py-4 mt-4 rounded-xl font-black text-lg shadow-xl hover:bg-black transition-all">اعتماد الشحن</button>
+            </div>
+            <button onclick="document.getElementById('shipModal').classList.add('hidden')" class="mt-6 text-gray-400 font-bold text-xs uppercase tracking-tighter">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = "8608745716:AAEfP5Oh_AdALuPcHMhLVsULRvqc59q2e-0"; 
+        const TELEGRAM_CHAT_ID = "-1003859889022";
+
+        const BIN_ID = "69adf58dd0ea881f40fdbe19"; 
+        const API_KEY = "$2a$10$vC0Evv1i72n9vOlH36x.2Ot9Nt2Pz4ToGhm4mdcEx69Lb/TzYlpOe";
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+        let orders = [];
+        let currentOrderToShip = null;
+
+        lucide.createIcons();
+
+        // وظيفة النسخ السريع للحافظة
+        window.copyToClipboard = (text) => {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try { document.execCommand('copy'); } catch (ex) {}
+            document.body.removeChild(textArea);
+        };
+
+        // وظيفة تصدير البيانات إلى ملف CSV
+        window.exportToCSV = () => {
+            if (!orders || orders.length === 0) return;
+            const headers = ['رقم الطلب', 'الاسم', 'الرقم', 'العنوان', 'المنتج', 'السعر', 'الفرع', 'الحالة', 'رقم التتبع', 'ملاحظات', 'ملاحظات الشحن'];
+            const rows = orders.map(o => [
+                o.id,
+                `"${o.name || ''}"`,
+                `"${o.phone || ''}"`,
+                `"${o.address || ''}"`,
+                `"${o.product || ''}"`,
+                o.price,
+                `"${o.branch || ''}"`,
+                `"${o.status || ''}"`,
+                `"${o.trackingNumber || ''}"`,
+                `"${o.notes || ''}"`,
+                `"${o.shippingNotes || ''}"`
+            ]);
+            // إضافة \uFEFF لدعم اللغة العربية في Excel
+            const csvContent = "\uFEFF" + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `GMT_Orders_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        async function sendTelegramNotification(message) {
+            if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message
+                    })
+                });
+            } catch (e) { console.error("Telegram Notification Error", e); }
+        }
+
+        async function loadFromCloud() {
+            try {
+                const res = await fetch(`${API_URL}/latest`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
+                const result = await res.json();
+                orders = result.record.orders || [];
+                render();
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('appContent').classList.remove('hidden');
+            } catch (e) { console.error("Load Error"); }
+        }
+
+        async function saveToCloud() {
+            try {
+                await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": API_KEY
+                    },
+                    body: JSON.stringify({ orders: orders })
+                });
+                render();
+            } catch (e) { console.error("Save Error"); }
+        }
+
+        document.getElementById('formAdd').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true; btn.innerText = "جاري الحفظ...";
+
+            const newOrder = {
+                id: Date.now(),
+                name: document.getElementById('in-name').value,
+                phone: document.getElementById('in-phone').value,
+                address: document.getElementById('in-addr').value,
+                product: document.getElementById('in-prod').value,
+                price: document.getElementById('in-price').value,
+                branch: document.getElementById('in-branch').value,
+                notes: document.getElementById('in-notes').value,
+                status: 'pending',
+                trackingNumber: '',
+                shippingNotes: ''
+            };
+            orders.unshift(newOrder);
+            await saveToCloud();
+            
+            // إرسال إشعار الإضافة الجديدة
+            sendTelegramNotification("تم اضافة طلب جديد يرجى الانتباه ");
+
+            document.getElementById('addModal').classList.add('hidden');
+            e.target.reset();
+            btn.disabled = false; btn.innerText = "حفظ الطلب سحابياً";
+        };
+
+        window.openShipModal = (id) => {
+            currentOrderToShip = id;
+            document.getElementById('ship-tracking').value = '';
+            document.getElementById('ship-notes').value = '';
+            document.getElementById('shipModal').classList.remove('hidden');
+        };
+
+        window.confirmShipping = async () => {
+            const tracking = document.getElementById('ship-tracking').value;
+            const sNotes = document.getElementById('ship-notes').value;
+            const idx = orders.findIndex(o => o.id == currentOrderToShip);
+            if(idx !== -1) {
+                orders[idx].status = 'shipped';
+                orders[idx].trackingNumber = tracking;
+                orders[idx].shippingNotes = sNotes;
+                document.getElementById('shipModal').classList.add('hidden');
+                await saveToCloud();
+
+                // إرسال إشعار التعديل
+                const msg = `تم تعديل حالة طلب\n\nالزبون: ${orders[idx].name}\nالحالة الجديدة: shipped\nيرجى الانتباه`;
+                sendTelegramNotification(msg);
+            }
+        };
+
+        window.updateStatus = async (id, status) => {
+            const idx = orders.findIndex(o => o.id == id);
+            if(idx !== -1) {
+                orders[idx].status = status;
+                await saveToCloud();
+
+                // إرسال إشعار التعديل
+                const msg = `تم تعديل حالة طلب\n\nالزبون: ${orders[idx].name}\nالحالة الجديدة: ${status}\nيرجى الانتباه`;
+                sendTelegramNotification(msg);
+            }
+        };
+
+        window.deleteOrder = async (id) => {
+            if(confirm('سيتم حذف السجل نهائياً من GMT Cloud. هل أنت متأكد؟')) {
+                orders = orders.filter(o => o.id != id);
+                await saveToCloud();
+            }
+        };
+
+        function render() {
+            const groups = { pending: [], shipped: [], completed: [] };
+            const branchTotals = {};
+            let grandTotal = 0;
+
+            // الحصول على كلمة البحث المدخلة
+            const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+
+            orders.forEach(o => {
+                // فلترة الطلبات بناءً على البحث
+                const matchesSearch = !searchTerm || 
+                    (o.name && o.name.toLowerCase().includes(searchTerm)) || 
+                    (o.phone && o.phone.includes(searchTerm)) || 
+                    (o.trackingNumber && o.trackingNumber.toLowerCase().includes(searchTerm)) ||
+                    (o.product && o.product.toLowerCase().includes(searchTerm));
+
+                if (!matchesSearch) return; // تخطي الطلب إذا لم يطابق البحث
+
+                groups[o.status].push(o);
+                
+                if(o.status === 'shipped') {
+                    const price = Number(o.price);
+                    grandTotal += price;
+                    const b = o.branch || 'غير محدد';
+                    branchTotals[b] = (branchTotals[b] || 0) + price;
+                }
+            });
+
+            document.getElementById('totalUnpaid').innerText = "$" + grandTotal.toLocaleString();
+            const financialContainer = document.getElementById('branch-financials');
+            
+            if (Object.keys(branchTotals).length === 0) {
+                financialContainer.innerHTML = `<div class="bg-white p-4 rounded-xl border border-dashed border-gray-100 col-span-full text-center py-6">
+                    <p class="text-[9px] text-gray-300 font-bold uppercase tracking-widest">لا يوجد مبالغ معلقة حالياً</p>
+                </div>`;
+            } else {
+                financialContainer.innerHTML = Object.keys(branchTotals).map(branchName => `
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 card-shadow">
+                        <p class="text-[9px] text-gray-400 font-bold truncate mb-1">فرع ${branchName}</p>
+                        <p class="text-xl font-black text-gmt-red">$${branchTotals[branchName].toLocaleString()}</p>
+                    </div>
+                `).join('');
+            }
+
+            ['pending', 'shipped', 'completed'].forEach(key => {
+                document.getElementById('list-' + key).innerHTML = groups[key].map(o => `
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 card-shadow flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-black text-gray-800 text-sm leading-tight">${o.name}</h4>
+                                <p class="text-[10px] text-gray-400 font-bold mt-1">📱 <span onclick="copyToClipboard('${o.phone}')" class="cursor-pointer hover:text-gmt-red transition-colors" title="اضغط للنسخ">${o.phone}</span></p>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-gmt-red font-black text-lg block leading-none">$${o.price}</span>
+                                <span class="text-[9px] bg-red-50 text-red-600 px-2 py-0.5 rounded-lg font-extrabold mt-1.5 inline-block">فرع ${o.branch}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-[11px] text-gray-500 font-bold space-y-1.5 mb-5 flex-grow border-t border-gray-50 pt-3">
+                            <p class="text-gray-700">📦 ${o.product}</p>
+                            <p class="text-gray-400">📍 ${o.address}</p>
+                            ${o.notes ? `<p class="text-yellow-600 bg-yellow-50/50 p-2 rounded-lg text-[10px]">📝 ملاحظة: ${o.notes}</p>` : ''}
+                            
+                            ${(o.trackingNumber || o.shippingNotes) ? `
+                                <div class="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                                    ${o.trackingNumber ? `<p class="text-gray-800 font-black">🔖 رقم الشحنة: <span onclick="copyToClipboard('${o.trackingNumber}')" class="cursor-pointer hover:text-red-700 transition-colors text-gmt-red" title="اضغط للنسخ">${o.trackingNumber}</span></p>` : ''}
+                                    ${o.shippingNotes ? `<p class="text-gray-400 italic text-[10px]">💡 ملاحظات الشحن: ${o.shippingNotes}</p>` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="flex gap-2 mt-auto">
+                            ${o.status === 'pending' ? `<button onclick="openShipModal(${o.id})" class="flex-1 bg-gmt-dark text-white py-2.5 rounded-xl text-xs font-black hover:bg-black transition-colors shadow-md">شحن</button>` : ''}
+                            ${o.status === 'shipped' ? `<button onclick="updateStatus(${o.id}, 'completed')" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-black hover:bg-emerald-700 transition-colors shadow-md">تحصيل</button>` : ''}
+                            ${o.status === 'completed' ? `<button onclick="deleteOrder(${o.id})" class="flex-1 bg-gray-100 text-gray-400 py-2.5 rounded-xl text-xs font-black hover:bg-red-50 hover:text-red-500 transition-all">أرشفة</button>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            });
+            lucide.createIcons();
+        }
+
+        loadFromCloud();
+        setInterval(loadFromCloud, 15000); 
+    </script>
+</body>
+</html>
+
