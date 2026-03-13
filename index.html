@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GMT SYSTEMS - Management</title>
     
-    <!-- إعدادات الأيقونة والشاشة الرئيسية -->
     <link rel="icon" type="image/jpeg" href="1000539321.jpg">
     <link rel="apple-touch-icon" href="1000539321.jpg">
     
-    <!-- إعدادات لجعله يظهر كتطبيق مستقل (بدون شريط المتصفح) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="GMT Systems">
@@ -37,28 +35,55 @@
         }
 
         .bg-gmt-red { background-color: var(--gmt-red); }
+        .bg-gmt-dark { background-color: var(--gmt-dark); }
+        .text-gmt-dark { color: var(--gmt-dark); }
         .text-gmt-red { color: var(--gmt-red); }
         
         .card-shadow {
             box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             border-color: var(--gmt-red) !important;
             box-shadow: 0 0 0 2px rgba(213, 0, 28, 0.1);
         }
 
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        
+        /* إخفاء شريط التمرير للتبويبات مع بقاء السحب باللمس وتحسينه */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { 
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            overscroll-behavior-x: contain;
+        }
+
+        /* حركة الهيدر الذكي */
+        .smart-header {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .header-hidden {
+            transform: translateY(-100%);
+        }
+
+        /* إصلاح مشكلة شفافية الأزرار وتحسين لمس الموبايل */
+        button:not(:disabled), a:not(:disabled) {
+            opacity: 1 !important;
+            touch-action: manipulation;
+        }
+        button:active:not(:disabled), a:active:not(:disabled) {
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body class="pb-24 bg-gray-50/50">
 
-    <!-- Header الرسمي -->
-    <header class="bg-white border-b border-gray-100 p-4 sticky top-0 z-50 shadow-sm">
+    <header id="main-header" class="smart-header bg-white border-b border-gray-100 p-4 sticky top-0 z-50 shadow-sm">
         <div class="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
             <div class="flex items-center gap-4 w-full lg:w-auto justify-center lg:justify-start">
-                <!-- استخدام الصورة المرفوعة كلوغو أيضاً -->
                 <img src="logo.jpg" alt="GMT Logo" class="h-14 w-auto object-contain rounded-lg" onerror="this.src='https://via.placeholder.com/150x60?text=GMT+LOGO'">
                 <div class="border-r-2 border-gray-100 pr-4">
                     <h1 class="text-sm md:text-base font-extrabold text-gray-800 leading-tight">مجموعة General Media Tech التجارية</h1>
@@ -67,112 +92,253 @@
             </div>
             
             <div class="w-full lg:flex-1 lg:max-w-md">
-                <input type="text" id="searchInput" oninput="render()" placeholder="بحث سريع عن اسم، رقم، أو بوليصة..." class="w-full p-2.5 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-gray-200 focus:border-gmt-red transition-all text-center lg:text-right">
+                <input type="text" id="searchInput" oninput="render()" placeholder="بحث سريع..." class="w-full p-2.5 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-gray-200 focus:border-gmt-red transition-all text-center lg:text-right">
             </div>
             
             <div class="grid grid-cols-2 lg:flex gap-2 w-full lg:w-auto">
-                <a href="https://t.me/+1wJ25bgbz2NiYzFk" class="text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                <a href="http://90.153.255.28:8080/ords/f?p=102:03" target="_blank" class="text-center bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2 opacity-100">
+                    <i data-lucide="search" class="w-4 h-4 text-purple-600"></i> تحقق من الشحنة
+                </a>
+                <a href="https://t.me/+1wJ25bgbz2NiYzFk" class="text-center bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2 opacity-100">
                     <i data-lucide="send" class="w-4 h-4 text-blue-500"></i> تليغرام
                 </a>
-                <a href="http://90.153.255.28:8080/ords/f?p=102:03" target="_blank" class="text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="external-link" class="w-4 h-4 text-gmt-red"></i> تتبع
-                </a>
-                <!-- زر تصدير -->
-                <button onclick="exportToCSV()" class="text-center border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                <button onclick="document.getElementById('exportModal').classList.remove('hidden')" class="text-center bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2 opacity-100">
                     <i data-lucide="download" class="w-4 h-4 text-emerald-600"></i> تصدير
                 </button>
-                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-gmt-red text-white px-4 py-2.5 rounded-xl font-black text-xs shadow-md hover:bg-red-700 active:scale-95 transition-all flex items-center justify-center gap-2 tracking-wide">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة
+                <button onclick="openSelectEditModal()" class="text-center bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-2 opacity-100">
+                    <i data-lucide="edit" class="w-4 h-4 text-orange-500"></i> تعديل
+                </button>
+                <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-gmt-red text-white px-4 py-2.5 rounded-xl font-black text-xs shadow-md hover:bg-red-700 active:scale-95 transition-all flex items-center justify-center gap-2 tracking-wide col-span-2 lg:col-span-1 opacity-100">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة طلب
                 </button>
             </div>
         </div>
     </header>
 
     <main class="p-4 max-w-5xl mx-auto space-y-8 mt-6">
-        <!-- الإحصائيات -->
+        <!-- الإحصائيات المفصلة -->
         <section class="space-y-4">
             <div class="flex items-center gap-2 px-1">
                 <div class="w-1.5 h-5 bg-gmt-red rounded-full"></div>
-                <h2 class="text-xs font-black text-gray-500 uppercase">إحصائيات المبالغ المعلقة بالفروع</h2>
+                <h2 class="text-xs font-black text-gray-500 uppercase italic">ملخص المحفظة المالية</h2>
             </div>
-            <div id="branch-financials" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
-            <div class="bg-gmt-dark text-white p-5 rounded-2xl shadow-xl flex justify-between items-center bg-[#111111] border-b-4 border-gmt-red">
+            
+            <!-- بطاقة المجموع الكلي (إضافة جديدة) -->
+            <div onclick="toggleDetailedStats()" class="bg-white p-5 rounded-2xl shadow-sm border-r-4 border-gmt-red flex justify-between items-center card-shadow cursor-pointer transition-transform active:scale-95">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400">الإجمالي الكلي المعلق</p>
-                    <p class="text-[9px] text-gray-500 mt-0.5 font-semibold">مجموع المبالغ قيد الشحن لكافة الفروع</p>
+                    <p class="text-[10px] font-bold text-gray-400">المجموع الكلي</p>
+                    <p class="text-[9px] text-gray-500 font-semibold italic">انقر لعرض/إخفاء التفاصيل</p>
                 </div>
-                <p id="totalUnpaid" class="text-3xl font-black text-white">$0</p>
+                <p id="grandTotalPrice" class="text-2xl font-black text-gmt-red">$0</p>
+            </div>
+
+            <!-- الحاوية المخفية للبطاقات التفصيلية -->
+            <div id="detailed-stats-container" class="hidden space-y-4 transition-all duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- بطاقة قيد التجهيز -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-r-4 border-gray-400 flex justify-between items-center card-shadow">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400">إجمالي قيد التجهيز</p>
+                            <p class="text-[9px] text-gray-500 font-semibold italic">طلبات بانتظار الشحن</p>
+                        </div>
+                        <p id="totalPendingPrice" class="text-2xl font-black text-gray-600">$0</p>
+                    </div>
+                    <!-- بطاقة في الطريق -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-r-4 border-blue-500 flex justify-between items-center card-shadow">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400">إجمالي في الطريق</p>
+                            <p class="text-[9px] text-gray-500 font-semibold italic">بانتظار وصول الشحنات للزبائن</p>
+                        </div>
+                        <p id="totalShippedPrice" class="text-2xl font-black text-blue-600">$0</p>
+                    </div>
+                    <!-- بطاقة بانتظار التحصيل -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-r-4 border-[#D5001C] flex justify-between items-center card-shadow">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400">بانتظار التحصيل</p>
+                            <p class="text-[9px] text-gray-500 font-semibold italic">شحنات استلمها الزبائن ولم تُدفع بعد</p>
+                        </div>
+                        <p id="totalDeliveredPrice" class="text-2xl font-black text-[#D5001C]">$0</p>
+                    </div>
+                    <!-- بطاقة تم التحصيل / المبيعات -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border-r-4 border-emerald-500 flex justify-between items-center card-shadow">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400">إجمالي تم التحصيل</p>
+                            <p class="text-[9px] text-gray-500 font-semibold italic">المبيعات المكتملة والمحصلة</p>
+                        </div>
+                        <p id="totalCompletedPrice" class="text-2xl font-black text-emerald-600">$0</p>
+                    </div>
+                </div>
+
+                <div id="branch-financials" class="grid grid-cols-2 md:grid-cols-5 gap-3"></div>
             </div>
         </section>
 
         <div id="loader" class="text-center py-20">
             <div class="w-10 h-10 border-4 border-gmt-red border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p class="mt-4 text-[10px] font-bold text-gray-400 tracking-widest uppercase">جاري مزامنة بيانات GMT Cloud...</p>
+            <p class="mt-4 text-[10px] font-bold text-gray-400 tracking-widest uppercase">جاري المزامنة السحابية...</p>
         </div>
 
-        <div id="appContent" class="hidden space-y-12">
-            <section>
+        <div id="appContent" class="hidden space-y-6">
+            
+            <!-- شريط التبويبات للتنقل -->
+            <div class="flex overflow-x-auto gap-2 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 no-scrollbar snap-x">
+                <button onclick="switchTab('all')" id="tab-btn-all" class="snap-start shrink-0 px-5 py-2.5 rounded-xl text-sm font-black transition-all bg-gmt-dark text-white shadow-md opacity-100">الكل</button>
+                <button onclick="switchTab('pending')" id="tab-btn-pending" class="snap-start shrink-0 px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-gray-600 border border-gray-200 opacity-100">قيد التجهيز <span id="badge-pending" class="inline-block bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs mr-1 font-black">0</span></button>
+                <button onclick="switchTab('shipped')" id="tab-btn-shipped" class="snap-start shrink-0 px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-gray-600 border border-gray-200 opacity-100">في الطريق <span id="badge-shipped" class="inline-block bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs mr-1 font-black">0</span></button>
+                <button onclick="switchTab('delivered')" id="tab-btn-delivered" class="snap-start shrink-0 px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-gray-600 border border-gray-200 opacity-100">تأكيد الاستلام <span id="badge-delivered" class="inline-block bg-[#D5001C]/10 text-[#D5001C] px-2 py-0.5 rounded-full text-xs mr-1 font-black">0</span></button>
+                <button onclick="switchTab('completed')" id="tab-btn-completed" class="snap-start shrink-0 px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-gray-600 border border-gray-200 opacity-100">تم التحصيل <span id="badge-completed" class="inline-block bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs mr-1 font-black">0</span></button>
+            </div>
+
+            <!-- قسم قيد التجهيز -->
+            <section id="section-pending" class="transition-all duration-300">
                 <div class="flex items-center gap-2 mb-4 px-2">
                     <i data-lucide="inbox" class="w-5 h-5 text-gray-400"></i>
-                    <h2 class="text-xs font-black text-gray-500 italic"> طلبات قيد التجهيز</h2>
+                    <h2 class="text-xs font-black text-gray-500 italic uppercase tracking-wider">طلبات قيد التجهيز</h2>
                 </div>
                 <div id="list-pending" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </section>
-            <section>
-                <div class="flex items-center gap-2 mb-4 px-2">
-                    <i data-lucide="truck" class="w-5 h-5 text-gmt-red"></i>
-                    <h2 class="text-xs font-black text-gmt-red italic underline"> بضائع في الطريق (معلقة)</h2>
+
+            <!-- قسم في الطريق -->
+            <section id="section-shipped" class="transition-all duration-300">
+                <div class="flex items-center gap-2 mb-4 px-2 border-b border-blue-50 pb-2">
+                    <i data-lucide="truck" class="w-5 h-5 text-blue-600"></i>
+                    <h2 class="text-xs font-black text-blue-600 italic uppercase tracking-wider">بضائع في الطريق (بانتظار الاستلام)</h2>
                 </div>
                 <div id="list-shipped" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </section>
-            <section>
-                <div class="flex items-center gap-2 mb-4 px-2">
-                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i>
-                    <h2 class="text-xs font-black text-emerald-600 italic"> طلبات تم تسليمها بنجاح</h2>
+
+            <!-- قسم تم الاستلام (بانتظار التحصيل) -->
+            <section id="section-delivered" class="transition-all duration-300">
+                <div class="flex items-center gap-2 mb-4 px-2 border-b border-[#D5001C]/20 pb-2">
+                    <i data-lucide="package-check" class="w-5 h-5 text-[#D5001C]"></i>
+                    <h2 class="text-xs font-black text-[#D5001C] italic uppercase tracking-wider">بضائع تم استلامها (بانتظار التحصيل)</h2>
+                </div>
+                <div id="list-delivered" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </section>
+
+            <!-- قسم مكتمل -->
+            <section id="section-completed" class="transition-all duration-300">
+                <div class="flex items-center gap-2 mb-4 px-2 border-b border-blue-50 pb-2">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-blue-600"></i>
+                    <h2 class="text-xs font-black text-blue-600 italic uppercase tracking-wider">طلبات مكتملة (تم التحصيل)</h2>
                 </div>
                 <div id="list-completed" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </section>
         </div>
     </main>
 
+    <!-- مودال إضافة طلب -->
     <div id="addModal" class="fixed inset-0 bg-black/60 hidden z-[100] p-4 flex items-center justify-center backdrop-blur-md">
         <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
             <div class="flex justify-between items-center mb-6 border-b border-gray-50 pb-4">
                 <h3 class="font-black text-xl text-gray-800">إضافة طلب جديد</h3>
-                <button onclick="document.getElementById('addModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
+                <button onclick="document.getElementById('addModal').classList.add('hidden')" class="text-gray-400 opacity-100">
                     <i data-lucide="x-circle" class="w-7 h-7"></i>
                 </button>
             </div>
             <form id="formAdd" class="space-y-4">
-                <div class="space-y-3">
-                    <input required id="in-name" placeholder="اسم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
-                    <input required id="in-phone" placeholder="رقم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
-                    <input required id="in-addr" placeholder="عنوان الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
-                </div>
-                <div class="space-y-3">
-                    <input required id="in-prod" placeholder="اسم المنتج" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input required id="in-price" type="number" placeholder="المبلغ $" class="w-full p-4 bg-red-50 text-red-700 rounded-xl outline-none text-sm font-black border border-red-100">
-                        <input required list="branchesList" id="in-branch" placeholder="فرع الشحن" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
-                    </div>
+                <input required id="in-name" placeholder="اسم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent opacity-100">
+                <input required id="in-phone" placeholder="رقم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent opacity-100">
+                <input required id="in-addr" placeholder="عنوان الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent opacity-100">
+                <input required id="in-prod" placeholder="اسم المنتج" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent opacity-100">
+                <div class="grid grid-cols-2 gap-2">
+                    <input required id="in-price" type="number" placeholder="المبلغ $" class="w-full p-4 bg-red-50 text-red-700 rounded-xl outline-none text-sm font-black border border-red-100 opacity-100">
+                    <input required list="branchesList" id="in-branch" placeholder="فرع الشحن" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent opacity-100">
                 </div>
                 <datalist id="branchesList">
                     <option value="حلب"><option value="حماة"><option value="درعا"><option value="دمشق"><option value="حمص">
                 </datalist>
-                <textarea id="in-notes" placeholder="ملاحظات الطلب..." rows="2" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold resize-none border border-transparent"></textarea>
-                <button type="submit" id="saveBtn" class="w-full bg-gmt-red text-white py-4 rounded-xl font-black text-lg shadow-lg hover:bg-red-700 transition-all">حفظ الطلب سحابياً</button>
+                <textarea id="in-notes" placeholder="ملاحظات..." rows="2" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold resize-none border border-transparent opacity-100"></textarea>
+                <button type="submit" id="saveBtn" class="w-full bg-gmt-red text-white py-4 rounded-xl font-black text-lg opacity-100">حفظ الطلب سحابياً</button>
             </form>
         </div>
     </div>
 
+    <!-- نافذة اختيار طلب للتعديل -->
+    <div id="selectEditModal" class="fixed inset-0 bg-black/60 hidden z-[100] p-4 flex items-center justify-center backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] flex flex-col h-[80vh]">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-50 pb-4 shrink-0">
+                <h3 class="font-black text-xl text-gray-800">اختر طلباً للتعديل</h3>
+                <button onclick="document.getElementById('selectEditModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i data-lucide="x-circle" class="w-7 h-7"></i>
+                </button>
+            </div>
+            <input type="text" id="searchEditInput" oninput="renderSelectEditList()" placeholder="ابحث باسم الزبون أو رقمه..." class="w-full p-3 mb-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-gray-200 focus:border-gmt-red transition-all shrink-0">
+            <div id="selectEditList" class="overflow-y-auto custom-scroll flex-1 space-y-2 pb-2">
+                <!-- Items will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل الطلب -->
+    <div id="editModal" class="fixed inset-0 bg-black/60 hidden z-[105] p-4 flex items-center justify-center backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-50 pb-4">
+                <h3 class="font-black text-xl text-gray-800 flex items-center gap-2"><i data-lucide="edit" class="w-5 h-5 text-orange-500"></i> تعديل بيانات الطلب</h3>
+                <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i data-lucide="x-circle" class="w-7 h-7"></i>
+                </button>
+            </div>
+            <form id="formEdit" class="space-y-4">
+                <input type="hidden" id="edit-id">
+                <input required id="edit-name" placeholder="اسم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
+                <input required id="edit-phone" placeholder="رقم الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
+                <input required id="edit-addr" placeholder="عنوان الزبون" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
+                <input required id="edit-prod" placeholder="اسم المنتج" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
+                <div class="grid grid-cols-2 gap-2">
+                    <input required id="edit-price" type="number" placeholder="المبلغ $" class="w-full p-4 bg-red-50 text-red-700 rounded-xl outline-none text-sm font-black border border-red-100">
+                    <input required list="branchesList" id="edit-branch" placeholder="فرع الشحن" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent">
+                </div>
+                <select id="edit-status" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold border border-transparent text-gray-700">
+                    <option value="pending">قيد التجهيز</option>
+                    <option value="shipped">في الطريق</option>
+                    <option value="delivered">تأكيد الاستلام (بانتظار التحصيل)</option>
+                    <option value="completed">مكتمل (تم التحصيل)</option>
+                </select>
+                <textarea id="edit-notes" placeholder="ملاحظات..." rows="2" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold resize-none border border-transparent"></textarea>
+                
+                <button type="submit" id="saveEditBtn" class="w-full bg-orange-500 text-white py-4 rounded-xl font-black text-lg shadow-md hover:bg-orange-600 active:scale-95 transition-all">حفظ التعديلات</button>
+                <button type="button" onclick="triggerDeleteFromEdit()" class="w-full bg-red-600 text-white py-4 rounded-xl font-black text-lg shadow-md hover:bg-red-700 active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="trash-2" class="w-5 h-5"></i> حذف الطلب نهائياً
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- مودال الشحن -->
     <div id="shipModal" class="fixed inset-0 bg-black/60 hidden z-[110] p-4 flex items-center justify-center backdrop-blur-md">
         <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl text-center">
             <i data-lucide="truck" class="w-12 h-12 text-gmt-red mx-auto mb-4"></i>
             <h3 class="font-black text-xl mb-4 text-gray-800">تأكيد شحن الطلب</h3>
-            <input id="ship-tracking" placeholder="رقم الشحنة / البوليصة" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-black text-center mb-3">
-            <textarea id="ship-notes" placeholder="ملاحظات الشحن..." class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-bold text-center mb-4"></textarea>
-            <button onclick="confirmShipping()" class="w-full bg-gmt-dark text-white py-4 rounded-xl font-black text-lg">اعتماد الشحن</button>
-            <button onclick="document.getElementById('shipModal').classList.add('hidden')" class="mt-4 text-gray-400 text-xs font-bold uppercase">إلغاء</button>
+            <input id="ship-tracking" placeholder="رقم تتبع الشحنة" class="w-full p-4 bg-gray-50 rounded-xl outline-none text-sm font-black text-center mb-3 opacity-100">
+            <button onclick="confirmShipping()" class="w-full bg-gmt-dark text-white py-4 rounded-xl font-black text-lg opacity-100">اعتماد الشحن</button>
+            <button onclick="document.getElementById('shipModal').classList.add('hidden')" class="mt-4 text-gray-400 text-xs font-bold uppercase opacity-100">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد تغيير الحالات -->
+    <div id="confirmModal" class="fixed inset-0 bg-black/60 hidden z-[120] p-4 flex items-center justify-center backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl text-center">
+            <i id="confirmIcon" data-lucide="alert-triangle" class="w-12 h-12 text-yellow-500 mx-auto mb-4"></i>
+            <h3 id="confirmTitle" class="font-black text-xl mb-3 text-gray-800">تأكيد الإجراء</h3>
+            <p id="confirmMessage" class="text-sm font-bold text-gray-500 mb-6">هل أنت متأكد من تغيير حالة هذا الطلب؟</p>
+            <div class="flex gap-3">
+                <button onclick="executeConfirm()" class="flex-1 bg-gmt-dark text-white py-3.5 rounded-xl font-black text-sm transition-transform active:scale-95 opacity-100">تأكيد</button>
+                <button onclick="closeConfirmModal()" class="flex-1 bg-gray-200 text-gray-700 py-3.5 rounded-xl font-black text-sm transition-transform active:scale-95 opacity-100">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة التصدير الجديدة -->
+    <div id="exportModal" class="fixed inset-0 bg-black/60 hidden z-[130] p-4 flex items-center justify-center backdrop-blur-md">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl text-center">
+            <i data-lucide="download-cloud" class="w-12 h-12 text-emerald-600 mx-auto mb-4"></i>
+            <h3 class="font-black text-xl mb-5 text-gray-800">خيارات التصدير</h3>
+            <div class="space-y-3">
+                <button onclick="executeExport(false)" class="w-full bg-emerald-600 text-white py-4 rounded-xl font-black text-sm shadow-md transition-transform active:scale-95">تصدير فقط</button>
+                <button onclick="executeExport(true)" class="w-full bg-gmt-red text-white py-4 rounded-xl font-black text-sm shadow-md transition-transform active:scale-95">تصدير + مسح الطلبات المحصلة</button>
+                <button onclick="document.getElementById('exportModal').classList.add('hidden')" class="w-full bg-gray-100 text-gray-600 py-3.5 rounded-xl font-black text-sm mt-3 transition-transform active:scale-95">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -185,18 +351,33 @@
 
         let orders = [];
         let currentOrderToShip = null;
+        let pendingAction = { id: null, type: null };
+        let currentTab = 'all'; // التبويب النشط الافتراضي
 
         lucide.createIcons();
 
+        // منطق الهيدر الذكي
+        let lastScrollY = window.scrollY;
+        const mainHeader = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > lastScrollY && window.scrollY > 60) {
+                // سحب للأسفل: إخفاء
+                mainHeader.classList.add('header-hidden');
+            } else {
+                // سحب للأعلى: إظهار
+                mainHeader.classList.remove('header-hidden');
+            }
+            lastScrollY = window.scrollY <= 0 ? 0 : window.scrollY;
+        }, { passive: true });
+
         async function sendTelegramNotification(message) {
-            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
             try {
-                await fetch(url, {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
                 });
-            } catch (e) { console.error("Telegram Error", e); }
+            } catch (e) {}
         }
 
         async function loadFromCloud() {
@@ -207,7 +388,7 @@
                 render();
                 document.getElementById('loader').classList.add('hidden');
                 document.getElementById('appContent').classList.remove('hidden');
-            } catch (e) { console.error("Load Error"); }
+            } catch (e) {}
         }
 
         async function saveToCloud() {
@@ -218,57 +399,13 @@
                     body: JSON.stringify({ orders: orders })
                 });
                 render();
-            } catch (e) { console.error("Save Error"); }
+            } catch (e) {}
         }
-
-        // إضافة دالة التصدير التي كانت مفقودة
-        window.exportToCSV = () => {
-            if (!orders || orders.length === 0) {
-                alert("لا توجد طلبات لتصديرها.");
-                return;
-            }
-
-            // تجهيز رؤوس الأعمدة
-            const headers = ['المعرف', 'اسم الزبون', 'رقم الهاتف', 'العنوان', 'المنتج', 'السعر', 'الفرع', 'حالة الطلب', 'رقم التتبع', 'ملاحظات'];
-            
-            // تحويل مصفوفة الطلبات إلى نصوص CSV
-            const csvRows = [];
-            csvRows.push(headers.join(','));
-
-            orders.forEach(o => {
-                const statusText = o.status === 'pending' ? 'قيد التجهيز' : (o.status === 'shipped' ? 'في الطريق' : 'تم التسليم');
-                const values = [
-                    o.id,
-                    `"${o.name || ''}"`,
-                    `"${o.phone || ''}"`,
-                    `"${o.address || ''}"`,
-                    `"${o.product || ''}"`,
-                    o.price,
-                    `"${o.branch || ''}"`,
-                    `"${statusText}"`,
-                    `"${o.trackingNumber || ''}"`,
-                    `"${(o.notes || '').replace(/\n/g, ' ')}"`
-                ];
-                csvRows.push(values.join(','));
-            });
-
-            // إضافة BOM لتوافق اللغة العربية مع Excel
-            const csvData = "\uFEFF" + csvRows.join('\n');
-            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            
-            const link = document.createElement('a');
-            link.setAttribute('href', url);
-            link.setAttribute('download', `طلبات_GMT_${new Date().toLocaleDateString('ar-EG')}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
 
         document.getElementById('formAdd').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveBtn');
-            btn.disabled = true; btn.innerText = "جاري الحفظ...";
+            btn.disabled = true;
             const newOrder = {
                 id: Date.now(),
                 name: document.getElementById('in-name').value,
@@ -282,14 +419,114 @@
             };
             orders.unshift(newOrder);
             await saveToCloud();
-            sendTelegramNotification(`📦 طلب جديد:\nالزبون: ${newOrder.name}\nالمنتج: ${newOrder.product}\nالقيمة: $${newOrder.price}`);
+            sendTelegramNotification(`📦 طلب جديد:\nالزبون: ${newOrder.name}\nالقيمة: $${newOrder.price}`);
             document.getElementById('addModal').classList.add('hidden');
             e.target.reset();
-            btn.disabled = false; btn.innerText = "حفظ الطلب سحابياً";
+            btn.disabled = false;
+        };
+
+        // --- دوال التعديل ---
+        window.openSelectEditModal = () => {
+            document.getElementById('searchEditInput').value = '';
+            renderSelectEditList();
+            document.getElementById('selectEditModal').classList.remove('hidden');
+        };
+
+        window.renderSelectEditList = () => {
+            const searchTerm = (document.getElementById('searchEditInput').value || '').toLowerCase();
+            const list = document.getElementById('selectEditList');
+            
+            const filtered = orders.filter(o => 
+                !searchTerm || (o.name?.toLowerCase().includes(searchTerm)) || (o.phone?.includes(searchTerm))
+            );
+            
+            if(filtered.length === 0) {
+                list.innerHTML = '<p class="text-center text-gray-400 text-sm mt-4 font-bold">لا يوجد نتائج مطابقة</p>';
+                return;
+            }
+
+            list.innerHTML = filtered.map(o => `
+                <div onclick="openEditModal(${o.id})" class="bg-white p-4 rounded-xl cursor-pointer border border-gray-100 shadow-sm hover:border-gmt-red hover:shadow-md transition-all flex justify-between items-center group">
+                    <div>
+                        <p class="font-black text-sm text-gray-800 group-hover:text-gmt-red transition-colors">${o.name}</p>
+                        <p class="text-[11px] font-bold text-gray-500 mt-0.5">${o.phone} • <span class="text-gray-400">${o.product}</span></p>
+                    </div>
+                    <div class="text-left flex flex-col items-end">
+                        <p class="font-black text-gmt-red text-sm">$${o.price}</p>
+                        <p class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-50 text-gray-600 mt-1">${getStatusTextAr(o.status)}</p>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        function getStatusTextAr(status) {
+            switch(status) {
+                case 'pending': return 'قيد التجهيز';
+                case 'shipped': return 'في الطريق';
+                case 'delivered': return 'بانتظار التحصيل';
+                case 'completed': return 'تم التحصيل';
+                default: return status;
+            }
+        }
+
+        window.openEditModal = (id) => {
+            const order = orders.find(o => o.id == id);
+            if (!order) return;
+            
+            document.getElementById('selectEditModal').classList.add('hidden');
+            
+            document.getElementById('edit-id').value = order.id;
+            document.getElementById('edit-name').value = order.name || '';
+            document.getElementById('edit-phone').value = order.phone || '';
+            document.getElementById('edit-addr').value = order.address || '';
+            document.getElementById('edit-prod').value = order.product || '';
+            document.getElementById('edit-price').value = order.price || '';
+            document.getElementById('edit-branch').value = order.branch || '';
+            document.getElementById('edit-status').value = order.status || 'pending';
+            document.getElementById('edit-notes').value = order.notes || '';
+            
+            document.getElementById('editModal').classList.remove('hidden');
+        };
+
+        document.getElementById('formEdit').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveEditBtn');
+            btn.disabled = true;
+            btn.innerText = 'جاري الحفظ...';
+
+            const id = document.getElementById('edit-id').value;
+            const idx = orders.findIndex(o => o.id == id);
+            
+            if (idx !== -1) {
+                orders[idx].name = document.getElementById('edit-name').value;
+                orders[idx].phone = document.getElementById('edit-phone').value;
+                orders[idx].address = document.getElementById('edit-addr').value;
+                orders[idx].product = document.getElementById('edit-prod').value;
+                orders[idx].price = document.getElementById('edit-price').value;
+                orders[idx].branch = document.getElementById('edit-branch').value;
+                orders[idx].status = document.getElementById('edit-status').value;
+                orders[idx].notes = document.getElementById('edit-notes').value;
+                
+                await saveToCloud();
+            }
+
+            document.getElementById('editModal').classList.add('hidden');
+            btn.disabled = false;
+            btn.innerText = 'حفظ التعديلات';
+        };
+
+        // --- دالة تشغيل الحذف من نافذة التعديل ---
+        window.triggerDeleteFromEdit = () => {
+            const id = document.getElementById('edit-id').value;
+            // إغلاق نافذة التعديل أولاً
+            document.getElementById('editModal').classList.add('hidden');
+            // استدعاء نافذة التأكيد بالحذف
+            requestConfirm(id, 'force_delete');
         };
 
         window.openShipModal = (id) => {
             currentOrderToShip = id;
+            document.getElementById('ship-tracking').value = '';
             document.getElementById('shipModal').classList.remove('hidden');
         };
 
@@ -299,10 +536,10 @@
             if(idx !== -1) {
                 orders[idx].status = 'shipped';
                 orders[idx].trackingNumber = tracking;
-                orders[idx].shippingNotes = document.getElementById('ship-notes').value;
+                orders[idx].shipped_time = new Date().toISOString();
                 document.getElementById('shipModal').classList.add('hidden');
                 await saveToCloud();
-                sendTelegramNotification(`🚚 تم الشحن:\nالزبون: ${orders[idx].name}\nبوليصة: ${tracking}`);
+                sendTelegramNotification(`🚚 تم شحن طلب:\nالزبون: ${orders[idx].name}\nرقم تتبع: ${tracking}`);
             }
         };
 
@@ -311,66 +548,261 @@
             if(idx !== -1) {
                 orders[idx].status = status;
                 await saveToCloud();
-                sendTelegramNotification(`✅ تم التسليم:\nالزبون: ${orders[idx].name}`);
+                if(status === 'delivered') sendTelegramNotification(`✅ تم استلام الزبون للطلب:\nالزبون: ${orders[idx].name}`);
+                if(status === 'completed') sendTelegramNotification(`💰 تم تحصيل المبلغ بنجاح:\nالزبون: ${orders[idx].name}`);
             }
         };
 
         window.deleteOrder = async (id) => {
-            if(confirm('أرشفة الطلب؟')) {
-                orders = orders.filter(o => o.id != id);
+            orders = orders.filter(o => o.id != id);
+            await saveToCloud();
+        };
+
+        window.requestConfirm = (id, type) => {
+            pendingAction = { id, type };
+            const title = document.getElementById('confirmTitle');
+            const message = document.getElementById('confirmMessage');
+            const icon = document.getElementById('confirmIcon');
+            
+            if (type === 'delivered') {
+                title.innerText = 'تأكيد الاستلام';
+                message.innerText = 'هل استلم الزبون الطلب بالفعل؟';
+                icon.setAttribute('data-lucide', 'package-check');
+                icon.className = 'w-12 h-12 text-[#D5001C] mx-auto mb-4';
+            } else if (type === 'completed') {
+                title.innerText = 'تأكيد التحصيل';
+                message.innerText = 'هل تم تحصيل مبلغ الطلب بنجاح؟';
+                icon.setAttribute('data-lucide', 'dollar-sign');
+                icon.className = 'w-12 h-12 text-blue-500 mx-auto mb-4';
+            } else if (type === 'delete') {
+                title.innerText = 'تأكيد الأرشفة';
+                message.innerText = 'هل تريد أرشفة هذا الطلب وإخفاءه نهائياً؟';
+                icon.setAttribute('data-lucide', 'archive');
+                icon.className = 'w-12 h-12 text-gray-500 mx-auto mb-4';
+            } else if (type === 'force_delete') {
+                title.innerText = 'تأكيد الحذف';
+                message.innerText = 'هل أنت متأكد من حذف هذا الطلب نهائياً؟';
+                icon.setAttribute('data-lucide', 'trash-2');
+                icon.className = 'w-12 h-12 text-red-500 mx-auto mb-4';
+            }
+            
+            document.getElementById('confirmModal').classList.remove('hidden');
+            lucide.createIcons();
+        };
+
+        window.closeConfirmModal = () => {
+            document.getElementById('confirmModal').classList.add('hidden');
+            pendingAction = { id: null, type: null };
+        };
+
+        window.executeConfirm = () => {
+            if (pendingAction.id) {
+                if (pendingAction.type === 'delete' || pendingAction.type === 'force_delete') {
+                    deleteOrder(pendingAction.id);
+                } else {
+                    updateStatus(pendingAction.id, pendingAction.type);
+                }
+            }
+            closeConfirmModal();
+        };
+
+        window.exportToCSV = () => {
+            if (!orders || orders.length === 0) {
+                alert("لا توجد طلبات للتصدير.");
+                return;
+            }
+            
+            let csvContent = "\uFEFF"; 
+            csvContent += "المعرف,اسم الزبون,رقم الزبون,العنوان,المنتج,المبلغ,الفرع,الحالة,رقم التتبع,وقت الشحن,ملاحظات\n";
+            
+            orders.forEach(o => {
+                let statusAr = getStatusTextAr(o.status);
+                let shippedTime = o.shipped_time ? new Date(o.shipped_time).toLocaleString('en-GB') : '';
+
+                let row = [
+                    o.id,
+                    `"${o.name || ''}"`,
+                    `"${o.phone || ''}"`,
+                    `"${o.address || ''}"`,
+                    `"${o.product || ''}"`,
+                    o.price,
+                    `"${o.branch || ''}"`,
+                    `"${statusAr}"`,
+                    `"${o.trackingNumber || ''}"`,
+                    `"${shippedTime}"`,
+                    `"${(o.notes || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `GMT_Orders_${new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        // الدالة التنفيذية الجديدة للتصدير والمسح الاختياري
+        window.executeExport = async (deleteCompleted) => {
+            document.getElementById('exportModal').classList.add('hidden');
+            
+            // استدعاء دالة التصدير الاصلية
+            exportToCSV(); 
+            
+            // اذا اختار مسح الطلبات المحصلة
+            if (deleteCompleted) {
+                orders = orders.filter(o => o.status !== 'completed');
                 await saveToCloud();
+                render();
             }
         };
 
+        // دالة إظهار وإخفاء الإحصائيات التفصيلية
+        window.toggleDetailedStats = () => {
+            const container = document.getElementById('detailed-stats-container');
+            container.classList.toggle('hidden');
+        };
+
+        // دالة تغيير التبويب
+        window.switchTab = (tab) => {
+            currentTab = tab;
+            render();
+        };
+
         function render() {
-            const groups = { pending: [], shipped: [], completed: [] };
+            const groups = { pending: [], shipped: [], delivered: [], completed: [] };
             const branchTotals = {};
-            let grandTotal = 0;
+            let sumPending = 0;
+            let sumShipped = 0;
+            let sumDelivered = 0;
+            let sumCompleted = 0;
             const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
 
             orders.forEach(o => {
                 const matches = !searchTerm || (o.name?.toLowerCase().includes(searchTerm)) || (o.phone?.includes(searchTerm));
                 if (!matches) return;
-                groups[o.status].push(o);
-                if(o.status === 'shipped') {
-                    grandTotal += Number(o.price);
+                
+                if(groups[o.status]) groups[o.status].push(o);
+
+                // حساب المبالغ حسب الحالة
+                if(o.status === 'pending') sumPending += Number(o.price);
+                if(o.status === 'shipped') sumShipped += Number(o.price);
+                if(o.status === 'delivered') sumDelivered += Number(o.price);
+                if(o.status === 'completed') sumCompleted += Number(o.price);
+                
+                if(o.status === 'shipped' || o.status === 'delivered') {
                     branchTotals[o.branch] = (branchTotals[o.branch] || 0) + Number(o.price);
                 }
             });
 
-            document.getElementById('totalUnpaid').innerText = "$" + grandTotal.toLocaleString();
+            // تحديث بطاقة المجموع الكلي (لا تشمل المكتمل كما طلبت)
+            const grandTotal = sumPending + sumShipped + sumDelivered;
+            const grandTotalEl = document.getElementById('grandTotalPrice');
+            if(grandTotalEl) grandTotalEl.innerText = "$" + grandTotal.toLocaleString();
+
+            // تحديث الإحصائيات مع الحقول الجديدة
+            document.getElementById('totalPendingPrice').innerText = "$" + sumPending.toLocaleString();
+            document.getElementById('totalShippedPrice').innerText = "$" + sumShipped.toLocaleString();
+            document.getElementById('totalDeliveredPrice').innerText = "$" + sumDelivered.toLocaleString();
+            document.getElementById('totalCompletedPrice').innerText = "$" + sumCompleted.toLocaleString();
+            
             document.getElementById('branch-financials').innerHTML = Object.keys(branchTotals).map(b => `
-                <div class="bg-white p-4 rounded-xl border border-gray-100 card-shadow">
-                    <p class="text-[9px] text-gray-400 font-bold mb-1">فرع ${b}</p>
-                    <p class="text-xl font-black text-gmt-red">$${branchTotals[b].toLocaleString()}</p>
+                <div class="bg-white p-3 rounded-xl border border-gray-100 card-shadow text-center">
+                    <p class="text-[8px] text-gray-400 font-bold mb-1">${b}</p>
+                    <p class="text-sm font-black text-gray-700">$${branchTotals[b].toLocaleString()}</p>
                 </div>
             `).join('');
 
-            ['pending', 'shipped', 'completed'].forEach(key => {
-                document.getElementById('list-' + key).innerHTML = groups[key].map(o => `
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 card-shadow">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-black text-gray-800 text-sm">${o.name}</h4>
-                                <p class="text-[10px] text-gray-400 font-bold">${o.phone}</p>
-                            </div>
-                            <div class="text-left">
-                                <span class="text-gmt-red font-black text-lg">$${o.price}</span>
-                            </div>
-                        </div>
-                        <div class="text-[11px] text-gray-500 mb-4 pt-3 border-t border-gray-50">
-                            <p>📦 ${o.product}</p>
-                            <p>📍 ${o.address}</p>
-                            ${o.trackingNumber ? `<p class="mt-2 text-gmt-red font-bold">🔖 ${o.trackingNumber}</p>` : ''}
-                        </div>
-                        <div class="flex gap-2">
-                            ${o.status === 'pending' ? `<button onclick="openShipModal(${o.id})" class="flex-1 bg-black text-white py-2.5 rounded-xl text-xs font-black">شحن</button>` : ''}
-                            ${o.status === 'shipped' ? `<button onclick="updateStatus(${o.id}, 'completed')" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-black">تحصيل</button>` : ''}
-                            ${o.status === 'completed' ? `<button onclick="deleteOrder(${o.id})" class="flex-1 bg-gray-100 text-gray-400 py-2.5 rounded-xl text-xs font-black">أرشفة</button>` : ''}
-                        </div>
-                    </div>
-                `).join('');
+            // تحديث عدادات التبويبات
+            document.getElementById('badge-pending').innerText = groups.pending.length;
+            document.getElementById('badge-shipped').innerText = groups.shipped.length;
+            document.getElementById('badge-delivered').innerText = groups.delivered.length;
+            document.getElementById('badge-completed').innerText = groups.completed.length;
+
+            // تحديث ألوان وأشكال التبويبات حسب الحالة النشطة
+            ['all', 'pending', 'shipped', 'delivered', 'completed'].forEach(tab => {
+                const btn = document.getElementById('tab-btn-' + tab);
+                if (btn) {
+                    if (currentTab === tab) {
+                        btn.className = "snap-start shrink-0 px-5 py-2.5 rounded-xl text-sm font-black transition-all bg-gmt-dark text-white shadow-md opacity-100";
+                    } else {
+                        btn.className = "snap-start shrink-0 px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-white text-gray-500 border border-gray-200 hover:bg-gray-50 opacity-100";
+                    }
+                }
             });
+
+            // التحكم في إظهار وإخفاء الأقسام بناءً على التبويب النشط
+            ['pending', 'shipped', 'delivered', 'completed'].forEach(key => {
+                const section = document.getElementById('section-' + key);
+                if (section) {
+                    if (currentTab === 'all' || currentTab === key) {
+                        section.classList.remove('hidden');
+                        
+                        // رسم البطاقات داخل القسم
+                        document.getElementById('list-' + key).innerHTML = groups[key].map(o => {
+                            let colorClass = 'text-gray-800';
+                            let btnBgClass = '';
+                            let btnHoverClass = '';
+                            
+                            if (o.status === 'pending') {
+                                colorClass = 'text-blue-600';
+                                btnBgClass = 'bg-blue-600';
+                                btnHoverClass = 'hover:bg-blue-700';
+                            } else if (o.status === 'shipped') {
+                                colorClass = 'text-[#D5001C]';
+                                btnBgClass = 'bg-[#D5001C]';
+                                btnHoverClass = 'hover:bg-red-800';
+                            } else if (o.status === 'delivered') {
+                                colorClass = 'text-green-600';
+                                btnBgClass = 'bg-green-600';
+                                btnHoverClass = 'hover:bg-green-700';
+                            } else if (o.status === 'completed') {
+                                colorClass = 'text-blue-600';
+                                btnBgClass = 'bg-gray-200';
+                                btnHoverClass = 'hover:bg-gray-300';
+                            }
+
+                            return `
+                                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 card-shadow relative">
+                                    <button onclick="openEditModal(${o.id})" class="absolute top-4 left-4 text-gray-300 hover:text-orange-500 transition-colors">
+                                        <i data-lucide="edit" class="w-4 h-4"></i>
+                                    </button>
+                                    <div class="flex justify-between items-start mb-3 pl-6">
+                                        <div>
+                                            <h4 class="font-black text-gray-800 text-sm">${o.name}</h4>
+                                            <p class="text-[10px] text-gray-400 font-bold italic">${o.phone}</p>
+                                        </div>
+                                        <div class="text-left">
+                                            <span class="${colorClass} font-black text-lg">$${o.price}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-[11px] text-gray-500 mb-4 pt-3 border-t border-gray-50">
+                                        <p class="font-bold">📦 ${o.product}</p>
+                                        <p>📍 ${o.address} (${o.branch})</p>
+                                        ${o.trackingNumber ? `<p class="mt-2 ${colorClass} font-black">🔖 رقم تتبع: ${o.trackingNumber}</p>` : ''}
+                                        ${o.shipped_time ? `<p class="mt-1.5 text-[9px] text-gray-400 font-bold">🕒 شُحن في: <span dir="ltr">${new Date(o.shipped_time).toLocaleString('en-GB', {hour12: true})}</span></p>` : ''}
+                                        ${o.notes ? `<p class="mt-2 text-gray-600 font-bold">📝 ملاحظات: ${o.notes}</p>` : ''}
+                                    </div>
+                                    <div class="flex gap-2">
+                                        ${o.status === 'pending' ? `<button onclick="openShipModal(${o.id})" class="flex-1 ${btnBgClass} text-white py-3 rounded-xl text-xs font-black opacity-100 ${btnHoverClass} transition-colors">إرسال للشحن</button>` : ''}
+                                        ${o.status === 'shipped' ? `<button onclick="requestConfirm(${o.id}, 'delivered')" class="flex-1 ${btnBgClass} text-white py-3 rounded-xl text-xs font-black flex items-center justify-center gap-1 opacity-100 ${btnHoverClass} transition-colors"><i data-lucide="package-check" class="w-4 h-4"></i> تأكيد الاستلام</button>` : ''}
+                                        ${o.status === 'delivered' ? `<button onclick="requestConfirm(${o.id}, 'completed')" class="flex-1 ${btnBgClass} text-white py-3 rounded-xl text-xs font-black flex items-center justify-center gap-1 opacity-100 ${btnHoverClass} transition-colors"><i data-lucide="dollar-sign" class="w-4 h-4"></i> تم التحصيل</button>` : ''}
+                                        ${o.status === 'completed' ? `<button onclick="requestConfirm(${o.id}, 'delete')" class="flex-1 ${btnBgClass} text-gray-600 py-3 rounded-xl text-xs font-black opacity-100 ${btnHoverClass} transition-colors">أرشفة نهائية</button>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                }
+            });
+            
             lucide.createIcons();
         }
 
