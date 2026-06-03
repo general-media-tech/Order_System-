@@ -908,6 +908,11 @@ function cardHTML(o) {
         </div>
         <div class="flex gap-2">
             ${actionBtn}
+            ${o.phone ? `<a href="https://wa.me/963${o.phone.replace(/^0/,'').replace(/[^0-9]/g,'')}" target="_blank" rel="noopener" class="w-10 h-10 bg-[#25D366] rounded-xl flex items-center justify-center text-white hover:bg-[#1ebe5d] transition-colors shrink-0" title="WhatsApp">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            </a>` : `<div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-300 shrink-0" title="لا يوجد رقم هاتف">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            </div>`}
             <button onclick="printOrder(${o.id})" class="w-10 h-10 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-center text-gray-400 hover:text-gray-700 transition-colors shrink-0" title="طباعة فاتورة">
                 <i data-lucide="printer" class="w-4 h-4"></i>
             </button>
@@ -945,8 +950,8 @@ document.getElementById('formAdd').onsubmit = async (e) => {
         e.target.reset();
         initAddModal();
         showToast('✅ تم حفظ الطلب', 'ok');
-        const prodList = items.map(i => `• ${i.name}${i.qty > 1 ? ' × ' + i.qty : ''}`).join('\n');
-        sendTelegram(`📦 طلب جديد\nالزبون: ${data.name}\n${prodList}\nالإجمالي: $${grandTotal.toFixed(2)}`);
+        const savedOrder = Array.isArray(result) ? result[0] : result;
+        await sendNewOrderNotification(savedOrder, items, grandTotal);
     } catch(err) {
         showToast('خطأ: ' + err.message, 'err');
     } finally {
@@ -1530,6 +1535,177 @@ async function sendTelegram(msg) {
             body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID, text:msg})
         });
     } catch(e){}
+}
+
+// ══ إرسال إشعار طلب جديد مع صورة الفاتورة ══
+async function sendNewOrderNotification(o, items, grandTotal) {
+    try {
+        const prodList = items.map(i => `• ${i.name}${i.qty > 1 ? ' × ' + i.qty : ''}`).join('\n');
+        const date = new Date(o.created_at || Date.now());
+        const dateStr = date.toLocaleDateString('ar-SY', { day:'2-digit', month:'long', year:'numeric' });
+        const caption =
+            `📦 *طلب جديد — #${o.id}*\n` +
+            `━━━━━━━━━━━━━━━━━━\n` +
+            `👤 *الزبون:* ${o.name}\n` +
+            `📞 *رقم الهاتف:* ${o.phone || '—'}\n` +
+            `📍 *العنوان:* ${o.address || '—'}\n` +
+            (o.branch ? `🏭 *الفرع:* ${o.branch}\n` : '') +
+            `━━━━━━━━━━━━━━━━━━\n` +
+            `📦 *المنتجات:*\n${prodList}\n` +
+            `💵 *الإجمالي:* $${grandTotal.toFixed(2)}\n` +
+            `━━━━━━━━━━━━━━━━━━\n` +
+            `📅 *التاريخ:* ${dateStr}\n` +
+            `🔖 *الحالة:* قيد التجهيز`;
+
+        // بناء صورة الفاتورة
+        const invoiceBlob = await buildInvoiceImage(o, items, grandTotal);
+
+        const fd = new FormData();
+        fd.append('chat_id', TELEGRAM_CHAT_ID);
+        fd.append('photo', invoiceBlob, `invoice_${o.id}.png`);
+        fd.append('caption', caption);
+        fd.append('parse_mode', 'Markdown');
+
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, {
+            method: 'POST', body: fd
+        });
+        if (!res.ok) throw new Error('Telegram photo failed');
+        showToast('📤 تم إرسال إشعار الطلب للتلغرام', 'ok');
+    } catch(e) {
+        // fallback نصي
+        const prodList = items.map(i => `• ${i.name}${i.qty > 1 ? ' × ' + i.qty : ''}`).join('\n');
+        sendTelegram(`📦 طلب جديد #${o.id}\nالزبون: ${o.name}\nالهاتف: ${o.phone || '—'}\n${prodList}\nالإجمالي: $${grandTotal.toFixed(2)}`);
+    }
+}
+
+// ══ بناء صورة الفاتورة على Canvas ══
+function buildInvoiceImage(o, items, grandTotal) {
+    return new Promise((resolve) => {
+        const W = 800;
+        // احسب الارتفاع بناءً على عدد المنتجات
+        const rowH = 38;
+        const baseH = 560;
+        const H = baseH + Math.max(0, items.length - 1) * rowH;
+        const canvas = document.createElement('canvas');
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // خلفية بيضاء
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, W, H);
+
+        // ═══ رأس الفاتورة ═══
+        ctx.fillStyle = '#D5001C';
+        ctx.fillRect(0, 0, W, 80);
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 26px Cairo, Arial';
+        ctx.textAlign = 'right';
+        ctx.direction = 'rtl';
+        ctx.fillText('General Media Tech — GMT Systems', W - 24, 36);
+        ctx.font = '600 14px Cairo, Arial';
+        ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.fillText('نظام إدارة أوردرات الشحن', W - 24, 60);
+
+        // رقم الفاتورة (يسار)
+        ctx.textAlign = 'left';
+        ctx.direction = 'ltr';
+        ctx.font = 'bold 22px monospace';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(`#${o.id}`, 24, 48);
+
+        // ═══ قسم معلومات الزبون ═══
+        ctx.fillStyle = '#F8F9FC';
+        roundRect(ctx, 20, 96, W - 40, 172, 12);
+        ctx.fill();
+
+        const date = new Date(o.created_at || Date.now());
+        const dateStr = date.toLocaleDateString('ar-SY', { day:'2-digit', month:'long', year:'numeric' });
+
+        const drawInfo = (label, value, x, y, valueColor='#111111') => {
+            ctx.textAlign = 'right'; ctx.direction = 'rtl';
+            ctx.font = '600 11px Cairo, Arial';
+            ctx.fillStyle = '#9CA3AF';
+            ctx.fillText(label, x, y);
+            ctx.font = 'bold 16px Cairo, Arial';
+            ctx.fillStyle = valueColor;
+            ctx.fillText(value || '—', x, y + 22);
+        };
+
+        drawInfo('اسم الزبون', o.name, W - 40, 120);
+        drawInfo('رقم الهاتف', o.phone || '—', W - 40, 164, '#1D4ED8');
+        drawInfo('عنوان التسليم', o.address || '—', W/2 - 10, 120);
+        drawInfo('تاريخ الطلب', dateStr, W/2 - 10, 164);
+
+        if (o.branch) {
+            drawInfo('فرع الشحن', o.branch, W - 40, 208);
+        }
+
+        // ═══ جدول المنتجات ═══
+        const tableY = 290;
+
+        // رأس الجدول
+        ctx.fillStyle = '#111111';
+        roundRect(ctx, 20, tableY, W - 40, 36, 8);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 13px Cairo, Arial';
+        ctx.textAlign = 'right'; ctx.direction = 'rtl';
+        ctx.fillText('المنتج', W - 40, tableY + 23);
+        ctx.textAlign = 'center';
+        ctx.fillText('الكمية', W / 2, tableY + 23);
+
+        // صفوف المنتجات
+        items.forEach((item, i) => {
+            const rowY = tableY + 36 + i * rowH;
+            ctx.fillStyle = i % 2 === 0 ? '#FAFAFA' : '#FFFFFF';
+            ctx.fillRect(20, rowY, W - 40, rowH);
+            ctx.strokeStyle = '#F1F3F7';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(20, rowY, W - 40, rowH);
+
+            ctx.fillStyle = '#111111';
+            ctx.font = 'bold 14px Cairo, Arial';
+            ctx.textAlign = 'right'; ctx.direction = 'rtl';
+            ctx.fillText(item.name, W - 40, rowY + 24);
+            ctx.textAlign = 'center';
+            ctx.fillText(String(item.qty), W / 2, rowY + 24);
+        });
+
+        // ═══ صندوق الإجمالي ═══
+        const totalY = tableY + 36 + items.length * rowH + 16;
+        ctx.fillStyle = '#FFF0F2';
+        roundRect(ctx, 20, totalY, W - 40, 60, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#FFD6DA';
+        ctx.lineWidth = 2;
+        roundRect(ctx, 20, totalY, W - 40, 60, 12);
+        ctx.stroke();
+
+        ctx.fillStyle = '#4B5563';
+        ctx.font = 'bold 14px Cairo, Arial';
+        ctx.textAlign = 'right'; ctx.direction = 'rtl';
+        ctx.fillText('الإجمالي الكلي', W - 40, totalY + 36);
+        ctx.fillStyle = '#D5001C';
+        ctx.font = 'bold 28px Cairo, Arial';
+        ctx.textAlign = 'left'; ctx.direction = 'ltr';
+        ctx.fillText(`$${grandTotal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`, 40, totalY + 40);
+
+        // ═══ تذييل ═══
+        const footerY = H - 44;
+        ctx.strokeStyle = '#F1F3F7';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(20, footerY - 10); ctx.lineTo(W - 20, footerY - 10); ctx.stroke();
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '600 12px Cairo, Arial';
+        ctx.textAlign = 'center'; ctx.direction = 'ltr';
+        ctx.fillText('General Media Tech — GMT Systems', W / 2, footerY + 10);
+        ctx.fillStyle = '#D5001C';
+        ctx.font = '600 11px Cairo, Arial';
+        ctx.fillText('شكراً لثقتكم بنا · هذه الفاتورة صادرة إلكترونياً', W / 2, footerY + 28);
+
+        canvas.toBlob(blob => resolve(blob), 'image/png', 0.95);
+    });
 }
 
 // ══ إرسال كليشيه الشحن كصورة للتلغرام ══
